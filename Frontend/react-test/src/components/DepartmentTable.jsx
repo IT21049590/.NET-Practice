@@ -1,64 +1,83 @@
-import React, { useEffect, useState } from 'react' 
-import api from '../../api' 
-import DepartmentModal from './DepartmentModal' 
-import './DepartmentTable.css' 
+import React, { useEffect, useState } from 'react'
+import api from '../../api'
+import DepartmentModal from './DepartmentModal'
+import './DepartmentTable.css'
 
 function DepartmentTable() {
-  const [departments, setDepartments] = useState([]) 
-  const [showModal, setShowModal] = useState(false) 
-  const [selectedDepartment, setSelectedDepartment] = useState(null) 
+  const [departments, setDepartments] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [selectedDepartment, setSelectedDepartment] = useState(null)
 
   useEffect(() => {
-    fetchDepartments() 
-  }, []) 
+    fetchDepartments()
+  }, [])
 
   const fetchDepartments = async () => {
     try {
-      const response = await api.get('/Department') 
-      setDepartments(response.data.data) 
+      const response = await api.get('/Department')
+      setDepartments(response.data.data)
     } catch (error) {
-      console.error('Error fetching departments:', error) 
+      console.error('Error fetching departments:', error)
     }
-  } 
+  }
 
   const handleDelete = async (id) => {
     try {
-      await api.delete(`/Department/${id}`) 
-      fetchDepartments() 
+      await api.delete(`/Department/${id}`)
+      toast.success('Department deleted successfully!')
+      fetchDepartments()
     } catch (error) {
-      console.error('Error deleting department:', error) 
+      toast.error('Failed to delete Department')
+      console.error('Error deleting department:', error)
     }
-  } 
+  }
 
   const handleSave = async (departmentData) => {
     try {
       if (departmentData.departmentId) {
-        await api.patch(`/Department?departmentId=${departmentData.departmentId}`, departmentData) 
+        try {
+          await api.patch(
+            `/Department?departmentId=${departmentData.departmentId}`,
+            departmentData
+          )
+          toast.success('Department updated successfully!')
+        } catch (error) {
+          toast.error('Failed to update Department')
+          console.error('Error updating department:', error)
+        }
       } else {
-        await api.post('/Department', departmentData) 
+        try {
+          await api.post('/Department', departmentData)
+          toast.success('Department added successfully!')
+        } catch (error) {
+          toast.error('Failed to add Department')
+          console.error('Error addinng department:', error)
+        }
       }
-      fetchDepartments() 
-      closeModal() 
+      fetchDepartments()
+      closeModal()
     } catch (error) {
-      console.error('Error saving department:', error) 
+      console.error('Error saving department:', error)
     }
-  } 
+  }
 
   const openModal = (department = null) => {
-    setSelectedDepartment(department) 
-    setShowModal(true) 
-  } 
+    setSelectedDepartment(department)
+    setShowModal(true)
+  }
 
   const closeModal = () => {
-    setSelectedDepartment(null) 
-    setShowModal(false) 
-  } 
+    setSelectedDepartment(null)
+    setShowModal(false)
+  }
 
   return (
-    <div className= 'table-container '>
+    <div className='table-container '>
       <h2>Departments</h2>
-      <button className= 'add-button ' onClick={() => openModal()}>Add Department</button>
-      <table className= 'table '>
+      <button className='add-button ' onClick={() => openModal()}>
+        Add Department
+      </button>
+      <table className='table '>
         <thead>
           <tr>
             <th>Department ID</th>
@@ -75,7 +94,9 @@ function DepartmentTable() {
               <td>{dep.departmentLocation}</td>
               <td>
                 <button onClick={() => openModal(dep)}>Edit</button>
-                <button onClick={() => handleDelete(dep.departmentId)}>Delete</button>
+                <button onClick={() => handleDelete(dep.departmentId)}>
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
@@ -90,7 +111,7 @@ function DepartmentTable() {
         />
       )}
     </div>
-  ) 
+  )
 }
 
-export default DepartmentTable 
+export default DepartmentTable

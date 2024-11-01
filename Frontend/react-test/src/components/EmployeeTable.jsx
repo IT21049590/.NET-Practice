@@ -1,77 +1,89 @@
-import React, { useEffect, useState } from "react";
-import api from "../../api";
-import EmployeeModal from "./EmployeeModal";
-import "./EmployeeTable.css";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useState } from 'react'
+import api from '../../api'
+import EmployeeModal from './EmployeeModal'
+import './EmployeeTable.css'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function EmployeeTable() {
-  const [employees, setEmployees] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [employees, setEmployees] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [selectedEmployee, setSelectedEmployee] = useState(null)
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+    fetchEmployees()
+  }, [])
 
   const fetchEmployees = async () => {
     try {
-      const response = await api.get("/Employee ");
+      const response = await api.get('/Employee ')
       const employeesWithoutDepartment = response.data.data.map((employee) => {
-        const { department, ...rest } = employee;
-        return rest;
-      });
-      setEmployees(employeesWithoutDepartment);
+        const { department, ...rest } = employee
+        return rest
+      })
+      setEmployees(employeesWithoutDepartment)
     } catch (error) {
-      console.error("Error fetching employees: ", error);
+      console.error('Error fetching employees: ', error)
     }
-  };
+  }
 
   const handleDelete = async (id) => {
     try {
-      await api.delete(`/Employee/${id}`);
-      toast("Wow so easy! ");
-      fetchEmployees();
+      await api.delete(`/Employee/${id}`)
+      toast.success('Employee deleted successfully!')
+      fetchEmployees()
     } catch (error) {
-      console.error("Error deleting employee: ", error);
+      toast.error('Failed to delete employee')
+      console.error('Error deleting employee: ', error)
     }
-  };
+  }
 
   const handleSave = async (employeeData) => {
     try {
       if (employeeData.employeeId) {
-        console.log(employeeData);
-        await api.patch(
-          `/Employee?employeeId=${employeeData.employeeId}`,
-          employeeData
-        );
+        try {
+          await api.patch(
+            `/Employee?employeeId=${employeeData.employeeId}`,
+            employeeData
+          )
+          toast.success('Employee Updated successfully!')
+        } catch (error) {
+          toast.error('Failed to Update employee')
+          console.error('Error Updating employee: ', error)
+        }
       } else {
-        await api.post("/Employee ", employeeData);
+        try {
+          await api.post('/Employee ', employeeData)
+          toast.success('Employee added successfully!')
+        } catch (error) {
+          toast.error('Failed to add employee')
+          console.error('Error Updating employee: ', error)
+        }
       }
-      fetchEmployees();
-      closeModal();
+      fetchEmployees()
+      closeModal()
     } catch (error) {
-      console.error("Error saving employee: ", error);
+      console.error('Error saving employee: ', error)
     }
-  };
+  }
 
   const openModal = (employee = null) => {
-    setSelectedEmployee(employee);
-    setShowModal(true);
-  };
+    setSelectedEmployee(employee)
+    setShowModal(true)
+  }
 
   const closeModal = () => {
-    setSelectedEmployee(null);
-    setShowModal(false);
-  };
+    setSelectedEmployee(null)
+    setShowModal(false)
+  }
 
   return (
-    <div className="table-container ">
+    <div className='table-container '>
       <h2>Employees</h2>
-      <button className="add-button " onClick={() => openModal()}>
+      <button className='add-button ' onClick={() => openModal()}>
         Add Employee
       </button>
-      <table className="table ">
+      <table className='table '>
         <thead>
           <tr>
             <th>First Name</th>
@@ -100,14 +112,14 @@ function EmployeeTable() {
       </table>
       {showModal && (
         <EmployeeModal
-          title={selectedEmployee ? "Edit Employee " : "Add Employee "}
+          title={selectedEmployee ? 'Edit Employee ' : 'Add Employee '}
           data={selectedEmployee}
           onSave={handleSave}
           onClose={closeModal}
         />
       )}
     </div>
-  );
+  )
 }
 
-export default EmployeeTable;
+export default EmployeeTable
