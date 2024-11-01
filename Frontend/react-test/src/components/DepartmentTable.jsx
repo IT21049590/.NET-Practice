@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import api from '../../api'
 import DepartmentModal from './DepartmentModal'
+import { toast } from 'react-toastify'
 import './DepartmentTable.css'
 
 function DepartmentTable() {
