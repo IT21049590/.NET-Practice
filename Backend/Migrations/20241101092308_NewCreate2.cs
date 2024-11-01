@@ -28,8 +28,7 @@ namespace Backend.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    employeeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    employeeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     firstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     lastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),

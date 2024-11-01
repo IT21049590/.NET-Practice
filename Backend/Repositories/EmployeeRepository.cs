@@ -15,7 +15,7 @@ namespace Backend.Repositories
 
         public async Task<IEnumerable<Employee>> GetAllEmployees() => await _context.Employees.Include(e => e.department).ToListAsync();
 
-        public async Task<Employee> GetEmployeeById(int id) => await _context.Employees.Include(e => e.department).FirstOrDefaultAsync(e => e.employeeId == id);
+        public async Task<Employee> GetEmployeeById(string id) => await _context.Employees.Include(e => e.department).FirstOrDefaultAsync(e => e.employeeId == id);
 
         public async Task AddEmployee(Employee employee)
         {
@@ -29,7 +29,7 @@ namespace Backend.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteEmployee(int id)
+        public async Task DeleteEmployee(string id)
         {
             var employee = await _context.Employees.FindAsync(id);
             if (employee != null)
@@ -42,5 +42,6 @@ namespace Backend.Repositories
         {
             return await _context.Employees.Include(e => e.department).FirstOrDefaultAsync(e => e.email == email);
         }
+
     }
 }

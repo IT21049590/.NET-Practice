@@ -38,7 +38,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployeeById(int id)
+        public async Task<IActionResult> GetEmployeeById(string id)
         {
             var employee = await _employeeRepository.GetEmployeeById(id);
             if (employee == null)
@@ -72,6 +72,7 @@ namespace Backend.Controllers
 
             var employee = new Employee
             {
+                employeeId = GenerateEmployeeId(),
                 firstName = employeeDto.firstName,
                 lastName = employeeDto.lastName,
                 email = employeeDto.email,
@@ -92,6 +93,13 @@ namespace Backend.Controllers
             });
         }
 
+        private string GenerateEmployeeId()
+        {
+            Random random = new Random();
+            int randomNumber = random.Next(1000, 10000);
+            return randomNumber.ToString();
+        }
+
         private int CalculateAge(DateTime dateOfBirth)
         {
             var today = DateTime.Today;
@@ -101,18 +109,18 @@ namespace Backend.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateEmployee([FromQuery] string email, [FromBody] PatchEmployeeDto updatedEmployee)
+        public async Task<IActionResult> UpdateEmployee([FromQuery] string employeeId, [FromBody] PatchEmployeeDto updatedEmployee)
         {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(employeeId))
             {
                 return BadRequest(new
                 {
-                    message = "Email is required to update the employee.",
+                    message = "employeeId is required to update the employee.",
                     statusCode = 400
                 });
             }
 
-            var existingEmployee = await _employeeRepository.GetEmployeeByEmail(email);
+            var existingEmployee = await _employeeRepository.GetEmployeeById(employeeId);
             if (existingEmployee == null)
             {
                 return NotFound(new
@@ -146,7 +154,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(string id)
         {
             var existingEmployee = await _employeeRepository.GetEmployeeById(id);
             if (existingEmployee == null)

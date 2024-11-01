@@ -42,11 +42,8 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Employee", b =>
                 {
-                    b.Property<int>("employeeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("employeeId"));
+                    b.Property<string>("employeeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("age")
                         .HasColumnType("int");

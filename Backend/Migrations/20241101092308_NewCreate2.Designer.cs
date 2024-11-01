@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241031174218_NewCreate2")]
+    [Migration("20241101092308_NewCreate2")]
     partial class NewCreate2
     {
         /// <inheritdoc />
@@ -45,11 +45,8 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Employee", b =>
                 {
-                    b.Property<int>("employeeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("employeeId"));
+                    b.Property<string>("employeeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("age")
                         .HasColumnType("int");
